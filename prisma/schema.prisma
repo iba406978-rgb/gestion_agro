@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model finance {
+  id            Int          @id @default(autoincrement())
+  libelle       String
+  montant       Float
+  type          finance_type
+  dateOperation DateTime     @default(now())
+  createdAt     DateTime     @default(now())
+}
+
+model Membre {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  prenom    String
+  telephone String?
+}
+
+model notification {
+  id        Int      @id @default(autoincrement())
+  titre     String
+  message   String
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model produit {
+  id          Int       @id @default(autoincrement())
+  nom         String
+  description String?
+  unite       String
+  createdAt   DateTime  @default(now())
+  recolte     recolte[]
+  vente       vente[]
+}
+
+model recolte {
+  id          Int      @id @default(autoincrement())
+  quantite    Float
+  dateRecolte DateTime
+  membreId    Int
+  produitId   Int
+  createdAt   DateTime @default(now())
+  membre      membre   @relation(fields: [membreId], references: [id], map: "Recolte_membreId_fkey")
+  produit     produit  @relation(fields: [produitId], references: [id], map: "Recolte_produitId_fkey")
+
+  @@index([membreId], map: "Recolte_membreId_fkey")
+  @@index([produitId], map: "Recolte_produitId_fkey")
+}
+
+model vente {
+  id           Int      @id @default(autoincrement())
+  quantite     Float
+  prixUnitaire Float
+  montantTotal Float
+  dateVente    DateTime @default(now())
+  produitId    Int
+  produit      produit  @relation(fields: [produitId], references: [id], map: "Vente_produitId_fkey")
+
+  @@index([produitId], map: "Vente_produitId_fkey")
+}
+
+enum finance_type {
+  RECETTE
+  DEPENSE
+}
