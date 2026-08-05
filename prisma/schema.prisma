@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
+  url      = env("mysql://root:@localhost:3306/gestion_agro")
 }
 
 model finance {
@@ -48,8 +49,9 @@ model recolte {
   membreId    Int
   produitId   Int
   createdAt   DateTime @default(now())
-  membre      membre   @relation(fields: [membreId], references: [id], map: "Recolte_membreId_fkey")
-  produit     produit  @relation(fields: [produitId], references: [id], map: "Recolte_produitId_fkey")
+
+  membre  Membre @relation(fields: [membreId], references: [id], map: "Recolte_membreId_fkey")
+  produit produit @relation(fields: [produitId], references: [id], map: "Recolte_produitId_fkey")
 
   @@index([membreId], map: "Recolte_membreId_fkey")
   @@index([produitId], map: "Recolte_produitId_fkey")
