@@ -1,3 +1,18 @@
+export const dynamic = "force-dynamic";
+
+import { prisma } from "@/lib/prisma";
+
+export default async function DashboardPage() {
+
+  const membres = await prisma.membre.count();
+
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>Membres : {membres}</p>
+    </div>
+  );
+}
 import CardStat from "@/components/dashboard/CardStat";
 
 import {
